@@ -1,0 +1,34 @@
+Low-level IRC library in Go
+===========================
+
+A low level library providing mostly a parsing utility abstracting IRC
+messages within a structure. This allows idiomatic code such as using
+a `chan *irc.Message` to send and receive IRC messages.
+
+A typical (though simplistic) way of using the library would be:
+
+    messages := make(chan *irc.Message)
+    conn, _ := irc.Connect("irc.freenode.net:6667")
+    go func() {
+        message, _ := conn.Read()
+        messages <- message
+    }()
+    go func() {
+        message <- messages
+        conn.Write(message)
+    }()
+    // Now we can easily use channels.
+    messages <- irc.NewMessage("USER go-bot")
+
+It's obvious from the above that this library is not intended for
+rapid development of bots or clients, it is rather intended as a basis
+for IRC frameworks, which would better suite such development.
+
+Installing
+==========
+
+As is standard with Go libraries, just make and install!
+
+   make
+   make test    # Optional
+   make install
